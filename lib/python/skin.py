@@ -8,7 +8,7 @@ from Components.config import ConfigSubsection, ConfigText, config
 from Components.RcModel import rc_model
 from Components.Sources.Source import ObsoleteSource
 from Components.SystemInfo import SystemInfo
-from Tools.Directories import SCOPE_CONFIG, SCOPE_CURRENT_LCDSKIN, SCOPE_CURRENT_SKIN, SCOPE_FONTS, SCOPE_SKIN, SCOPE_SKIN_IMAGE, resolveFilename, fileExists
+from Tools.Directories import SCOPE_CONFIG, SCOPE_CURRENT_LCDSKIN, SCOPE_CURRENT_SKIN, SCOPE_FONTS, SCOPE_SKIN, SCOPE_SKIN_IMAGE, resolveFilename
 from Tools.Import import my_import
 from Tools.LoadPixmap import LoadPixmap
 
@@ -764,10 +764,10 @@ def loadSingleSkinData(desktop, screenID, domSkin, pathSkin, scope=SCOPE_CURRENT
 				parameters["PartnerBoxE2TimerIconRepeat"] = applySkinFactor(510, 30, 20, 20)
 				parameters["PartnerBoxE2TimerState"] = applySkinFactor(150, 50, 150, 20)
 				parameters["PartnerBoxE2TimerTime"] = applySkinFactor(0, 50, 150, 20)
-				parameters["PartnerBoxEntryListName"] = applySkinFactor(5, 0, 150, 25)
-				parameters["PartnerBoxEntryListIP"] = applySkinFactor(120, 0, 150, 25)
-				parameters["PartnerBoxEntryListPort"] = applySkinFactor(270, 0, 100, 25)
-				parameters["PartnerBoxEntryListType"] = applySkinFactor(410, 0, 100, 25)
+				parameters["PartnerBoxEntryListName"] = applySkinFactor(5, 0, 150, 20)
+				parameters["PartnerBoxEntryListIP"] = applySkinFactor(120, 0, 150, 20)
+				parameters["PartnerBoxEntryListPort"] = applySkinFactor(270, 0, 100, 20)
+				parameters["PartnerBoxEntryListType"] = applySkinFactor(410, 0, 100, 20)
 				parameters["PartnerBoxTimerName"] = applySkinFactor(0, 30, 20)
 				parameters["PartnerBoxTimerServicename"] = applySkinFactor(0, 0, 30)
 				parameters["SHOUTcastListItem"] = applySkinFactor(20, 18, 22, 69, 20, 23, 43, 22)
@@ -815,10 +815,6 @@ def loadSingleSkinData(desktop, screenID, domSkin, pathSkin, scope=SCOPE_CURRENT
 			else:
 				render = 0
 			filename = resolveFilename(SCOPE_FONTS, filename, path_prefix=pathSkin)
-			if not fileExists(filename): #when font is not available look at current skin path
-				filename = resolveFilename(SCOPE_CURRENT_SKIN, filename)
-				if not fileExists(filename) and fileExists(resolveFilename(SCOPE_CURRENT_LCDSKIN, filename)):
-					filename = resolveFilename(SCOPE_CURRENT_LCDSKIN, filename)
 			if isfile(filename):
 				addFont(filename, name, scale, isReplacement, render)
 				# Log provided by C++ addFont code.
