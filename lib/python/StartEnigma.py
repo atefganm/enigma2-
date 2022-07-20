@@ -13,10 +13,6 @@ enigma.eTimer = eBaseImpl.eTimer
 enigma.eSocketNotifier = eBaseImpl.eSocketNotifier
 enigma.eConsoleAppContainer = eConsoleImpl.eConsoleAppContainer
 
-from boxbranding import getBoxType
-
-boxtype = getBoxType()
-
 from traceback import print_exc
 
 profile("SetupDevices")
@@ -592,6 +588,7 @@ profile("LCD")
 import Components.Lcd
 Components.Lcd.InitLcd()
 
+from Tools.HardwareInfo import HardwareInfo
 if boxtype in ('dm7080', 'dm820', 'dm900', 'dm920', 'dreamone', 'dreamtwo'):
 	print("[StartEnigma] Read /proc/stb/hdmi-rx/0/hdmi_rx_monitor")
 	check = open("/proc/stb/hdmi-rx/0/hdmi_rx_monitor", "r").read()
