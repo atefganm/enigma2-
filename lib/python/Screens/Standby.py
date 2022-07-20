@@ -1,4 +1,5 @@
 import os
+import struct
 import RecordTimer
 import Components.ParentalControl
 from Screens.Screen import Screen
@@ -30,7 +31,8 @@ QUIT_MANUFACTURER_RESET = 7
 QUIT_MAINT = 16
 QUIT_UPGRADE_PROGRAM = 42
 QUIT_IMAGE_RESTORE = 43
-QUIT_RRECVERY_MODE = 44
+QUIT_RRECVERY_MODE = 45
+
 
 def isInfoBarInstance():
 	global infoBarInstance
@@ -85,7 +87,7 @@ class StandbyScreen(Screen):
 			self.prev_running_service = eServiceReference(config.tv.lastservice.value)
 		service = self.prev_running_service and self.prev_running_service.toString()
 		if service:
-			if service.rsplit(":", 1)[1].startswith("/"):
+			if "%3a//" not in service and service.rsplit(":", 1)[1].startswith("/"):
 				self.paused_service = hasattr(self.session.current_dialog, "pauseService") and hasattr(self.session.current_dialog, "unPauseService") and self.session.current_dialog or self.infoBarInstance
 				self.paused_action = hasattr(self.paused_service, "seekstate") and hasattr(self.paused_service, "SEEK_STATE_PLAY") and self.paused_service.seekstate == self.paused_service.SEEK_STATE_PLAY
 				self.paused_action and self.paused_service.pauseService()
@@ -100,8 +102,11 @@ class StandbyScreen(Screen):
 			else:
 				self.timeHandler.m_timeUpdated.get().append(self.stopService)
 
-		if self.session.pipshown:
+		if hasattr(self.session, "pipshown") and self.session.pipshown:
 			self.infoBarInstance and hasattr(self.infoBarInstance, "showPiP") and self.infoBarInstance.showPiP()
+		if hasattr(self.session, "pip"):
+			del self.session.pip
+		self.session.pipshown = False
 
 		if SystemInfo["ScartSwitch"]:
 			self.avswitch.setInput("SCART")
@@ -366,3 +371,27 @@ class TryQuitMainloop(MessageBox):
 	def __onHide(self):
 		global inTryQuitMainloop
 		inTryQuitMainloop = False
+
+class SwitchToAndroid(Screen):
+	def __init__(self, session):
+		self.session = session
+		Screen.__init__(self, session)
+		self["myActionMap"] = ActionMap(["SetupActions", "ColorActions"],
+		{
+			"ok": self.goAndroid,
+			"cancel": self.close,
+		}, -1)
+		self.onShown.append(self.switchAndroid)
+
+	def goAndroid(self, answer):
+		from Screens.Standby import TryQuitMainloop
+		if answer is True:
+			with open('/dev/block/by-name/flag', 'wb') as f:
+				f.write(struct.pack("B", 0))
+			self.session.open(TryQuitMainloop, 2)
+		else:
+			self.close()
+
+	def switchAndroid(self):
+		self.onShown.remove(self.switchAndroid)
+		self.session.openWithCallback(self.goAndroid, MessageBox, _("\n Do you want to switch to Android ?"))
