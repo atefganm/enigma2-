@@ -8,7 +8,7 @@ from enigma import getBoxType
 def getFPVersion():
 	ret = None
 	try:
-		if getBoxType() in ('dm7080','dm820','dm520','dm525','dm900','dm920'):
+		if  HardwareInfo().get_device_model() in ('dm7080','dm820','dm520','dm525','dm900','dm920','dreamone','dreamtwo'):
 			ret = open("/proc/stb/fp/version", "r").read()
 		else:
 			ret = long(open("/proc/stb/fp/version", "r").read())
