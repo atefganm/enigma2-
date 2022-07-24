@@ -2,7 +2,7 @@ from os import path
 from fcntl import ioctl
 from struct import pack, unpack
 from time import time, localtime, gmtime
-from enigma import getBoxType
+from Tools.HardwareInfo import HardwareInfo
 
 
 def getFPVersion():
@@ -16,6 +16,7 @@ def getFPVersion():
 		try:
 			fp = open("/dev/dbox/fp0")
 			ret = ioctl(fp.fileno(), 0)
+			fp.close()
 		except IOError:
 			try:
 				ret = open("/sys/firmware/devicetree/base/bolt/tag", "r").read().rstrip("\0")

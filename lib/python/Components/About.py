@@ -4,6 +4,7 @@ import os
 import time
 import re
 from Tools.HardwareInfo import HardwareInfo
+from SystemInfo import SystemInfo
 
 
 def getVersionString():
